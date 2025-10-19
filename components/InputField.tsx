@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TextInputProps,
-} from "react-native";
+import { View, Text, TextInput, StyleSheet, TextInputProps } from "react-native";
 
 interface InputFieldProps extends TextInputProps {
   label: string;
@@ -19,7 +13,7 @@ export const InputField = ({ label, error, ...props }: InputFieldProps) => {
       <TextInput
         style={[styles.input, error && styles.inputError]}
         placeholderTextColor="#999"
-        {...props}
+        {...props} // no filtramos aquí, la validación la hace RHF
       />
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>

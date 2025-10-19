@@ -1,23 +1,27 @@
 // app/personal-info.tsx
 import React from "react";
-import { View, StyleSheet, ScrollView, Text } from "react-native";
+import { View, ScrollView, Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
+import { useCVContext } from "../context/CVContext";
 import { InputField } from "../components/InputField";
 import { NavigationButton } from "../components/NavigationButton";
-import { useCVContext } from "../context/CVContext";
 import { useForm, Controller } from "react-hook-form";
 import { PersonalInfo } from "../types/cv.types";
 
 export default function PersonalInfoScreen() {
   const router = useRouter();
-  const { cvData, updatePersonalInfo } = useCVContext();
+  
+  // ✅ CAMBIO: De "updatePersonalInfo" a "setPersonalInfo"
+  const { cvData, setPersonalInfo } = useCVContext();
 
-  const { control, handleSubmit, formState: { errors } } = useForm<PersonalInfo>({
+  const { control, handleSubmit } = useForm<PersonalInfo>({
     defaultValues: cvData.personalInfo,
+    mode: "onChange", // validación en tiempo real
   });
 
+  // ✅ CAMBIO: Usar setPersonalInfo en lugar de updatePersonalInfo
   const onSubmit = (data: PersonalInfo) => {
-    updatePersonalInfo(data);
+    setPersonalInfo(data);
     alert("Información guardada correctamente");
     router.back();
   };
@@ -27,60 +31,93 @@ export default function PersonalInfoScreen() {
       <View style={styles.content}>
         <Text style={styles.sectionTitle}>Información Personal</Text>
 
+        {/* Nombre Completo */}
         <Controller
           control={control}
           name="fullName"
-          rules={{ required: "El nombre es obligatorio" }}
-          render={({ field: { value, onChange } }) => (
-            <>
-              <InputField label="Nombre Completo *" placeholder="Juan Pérez" value={value} onChangeText={onChange} />
-              {errors.fullName && <Text style={styles.error}>{errors.fullName.message}</Text>}
-            </>
+          rules={{
+            required: "El nombre es obligatorio",
+            pattern: {
+              value: /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/,
+              message: "Solo se permiten letras y espacios",
+            },
+          }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <InputField
+              label="Nombre Completo *"
+              placeholder="Juan Pérez"
+              value={value}
+              onChangeText={onChange}
+              error={error?.message}
+            />
           )}
         />
 
+        {/* Email */}
         <Controller
           control={control}
           name="email"
           rules={{
             required: "El email es obligatorio",
-            pattern: { value: /\S+@\S+\.\S+/, message: "Email inválido" },
+            pattern: {
+              value: /\S+@\S+\.\S+/,
+              message: "Email inválido",
+            },
           }}
-          render={({ field: { value, onChange } }) => (
-            <>
-              <InputField
-                label="Email *"
-                placeholder="juan@email.com"
-                value={value}
-                onChangeText={onChange}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-              {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
-            </>
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <InputField
+              label="Email *"
+              placeholder="juan@email.com"
+              value={value}
+              onChangeText={onChange}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              error={error?.message}
+            />
           )}
         />
 
+        {/* Teléfono */}
         <Controller
           control={control}
           name="phone"
-          render={({ field: { value, onChange } }) => (
-            <InputField label="Teléfono" placeholder="+593 99 999 9999" value={value} onChangeText={onChange} keyboardType="phone-pad" />
+          rules={{
+            pattern: {
+              value: /^[0-9]*$/,
+              message: "Solo se permiten números",
+            },
+          }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <InputField
+              label="Teléfono"
+              placeholder="+593 99 999 9999"
+              value={value}
+              onChangeText={onChange}
+              keyboardType="phone-pad"
+              error={error?.message}
+            />
           )}
         />
 
+        {/* Ubicación */}
         <Controller
           control={control}
           name="location"
-          render={({ field: { value, onChange } }) => (
-            <InputField label="Ubicación" placeholder="Quito, Ecuador" value={value} onChangeText={onChange} />
+          render={({ field: { onChange, value } }) => (
+            <InputField
+              label="Ubicación"
+              placeholder="Quito, Ecuador"
+              value={value}
+              onChangeText={onChange}
+            />
           )}
         />
 
+        {/* Resumen Profesional */}
         <Controller
           control={control}
           name="summary"
-          render={({ field: { value, onChange } }) => (
+          render={({ field: { onChange, value } }) => (
             <InputField
               label="Resumen Profesional"
               placeholder="Describe brevemente tu perfil profesional..."
@@ -104,5 +141,4 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f5f5f5" },
   content: { padding: 20 },
   sectionTitle: { fontSize: 22, fontWeight: "bold", marginBottom: 16, color: "#2c3e50" },
-  error: { color: "red", marginBottom: 8 },
 });

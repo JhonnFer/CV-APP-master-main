@@ -16,7 +16,10 @@ import { useCVContext } from "../context/CVContext";
 
 export default function PhotoScreen() {
   const router = useRouter();
-  const { cvData, updatePersonalInfo } = useCVContext();
+  
+  // ✅ CAMBIO 1: De "updatePersonalInfo" a "setPersonalInfo"
+  const { cvData, setPersonalInfo } = useCVContext();
+  
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     cvData.personalInfo.profileImage
   );
@@ -24,7 +27,6 @@ export default function PhotoScreen() {
   // Solicitar permisos y tomar foto con la cámara
   const takePhoto = async () => {
     try {
-      // Solicitar permisos de cámara
       const cameraPermission =
         await ImagePicker.requestCameraPermissionsAsync();
 
@@ -36,10 +38,9 @@ export default function PhotoScreen() {
         return;
       }
 
-      // Abrir la cámara
       const result = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
-        aspect: [1, 1], // Aspecto cuadrado
+        aspect: [1, 1],
         quality: 0.8,
       });
 
@@ -55,7 +56,6 @@ export default function PhotoScreen() {
   // Seleccionar foto de la galería
   const pickImage = async () => {
     try {
-      // Solicitar permisos de galería
       const galleryPermission =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -67,7 +67,6 @@ export default function PhotoScreen() {
         return;
       }
 
-      // Abrir galería
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
@@ -84,9 +83,9 @@ export default function PhotoScreen() {
     }
   };
 
-  // Guardar la foto
+  // ✅ CAMBIO 2: Guardar la foto
   const handleSave = () => {
-    updatePersonalInfo({
+    setPersonalInfo({  // ← Cambió de updatePersonalInfo a setPersonalInfo
       ...cvData.personalInfo,
       profileImage: selectedImage,
     });
@@ -95,7 +94,7 @@ export default function PhotoScreen() {
     ]);
   };
 
-  // Eliminar foto
+  // ✅ CAMBIO 3: Eliminar foto
   const handleRemove = () => {
     Alert.alert("Confirmar", "¿Estás seguro de eliminar la foto de perfil?", [
       { text: "Cancelar", style: "cancel" },
@@ -104,7 +103,7 @@ export default function PhotoScreen() {
         style: "destructive",
         onPress: () => {
           setSelectedImage(undefined);
-          updatePersonalInfo({
+          setPersonalInfo({  // ← Cambió de updatePersonalInfo a setPersonalInfo
             ...cvData.personalInfo,
             profileImage: undefined,
           });
