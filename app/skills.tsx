@@ -1,11 +1,10 @@
-// app/skills.tsx
 import React from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
-  Button,
+  // ❌ ELIMINADO: Button
   FlatList,
   Alert,
 } from "react-native";
@@ -37,10 +36,10 @@ export default function SkillsScreen() {
   };
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
-      <Text style={{ fontSize: 20, marginBottom: 12 }}>Agregar Habilidad</Text>
+    <View className="flex-1 p-4 bg-gray-100">
+      <Text className="text-xl font-semibold mb-3 text-gray-800">Agregar Habilidad</Text>
 
-      <Text>Nombre de la habilidad</Text>
+      <Text className="text-base mb-1 text-gray-700">Nombre de la habilidad</Text>
       <Controller
         control={control}
         name="name"
@@ -54,59 +53,53 @@ export default function SkillsScreen() {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            style={{
-              borderWidth: 1,
-              borderRadius: 6,
-              padding: 8,
-              marginBottom: 4,
-            }}
+            className="border border-gray-300 rounded-lg p-2 mb-1 bg-white"
           />
         )}
       />
-      {errors.name && <Text style={{ color: "red" }}>{errors.name.message}</Text>}
+      {errors.name && <Text className="text-red-500 mb-2">{errors.name.message}</Text>}
 
-      <Text style={{ marginTop: 8 }}>Nivel</Text>
+      <Text className="text-base mt-2 mb-1 text-gray-700">Nivel</Text>
       <Controller
         control={control}
         name="level"
         render={({ field: { onChange, value } }) => (
-          <View style={{ flexDirection: "row", gap: 8, marginVertical: 8 }}>
+          <View className="flex-row flex-wrap gap-2 my-2">
             {LEVELS.map((lvl) => (
               <TouchableOpacity
                 key={lvl}
                 onPress={() => onChange(lvl)}
-                style={{
-                  padding: 8,
-                  borderWidth: 1,
-                  borderRadius: 6,
-                  backgroundColor: value === lvl ? "#ddd" : "transparent",
-                }}
+                className={`p-2 border rounded-lg ${
+                  value === lvl ? "bg-blue-100 border-blue-500" : "bg-white border-gray-300"
+                }`}
               >
-                <Text>{lvl}</Text>
+                <Text className={`${value === lvl ? "text-blue-700 font-semibold" : "text-gray-700"}`}>{lvl}</Text>
               </TouchableOpacity>
             ))}
           </View>
         )}
       />
 
-      <Button title="Agregar" onPress={handleSubmit(onSubmit)} />
+      {/* MIGRACIÓN: Button Agregar */}
+      <TouchableOpacity
+        onPress={handleSubmit(onSubmit)}
+        className="bg-blue-500 p-3 rounded-lg mt-3 mb-4"
+        activeOpacity={0.8}
+      >
+        <Text className="text-white text-base font-bold text-center">
+          Agregar Habilidad
+        </Text>
+      </TouchableOpacity>
 
-      <Text style={{ fontSize: 18, marginVertical: 12 }}>Habilidades agregadas</Text>
+      <Text className="text-lg font-semibold my-3 text-gray-800">Habilidades agregadas</Text>
       <FlatList
         data={cvData.skills}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              padding: 8,
-              borderBottomWidth: 1,
-            }}
-          >
+          <View className="flex-row justify-between items-center p-3 border-b border-gray-200 bg-white mb-1 rounded-sm">
             <View>
-              <Text style={{ fontWeight: "600" }}>{item.name}</Text>
-              <Text>{item.level}</Text>
+              <Text className="font-semibold text-base text-gray-800">{item.name}</Text>
+              <Text className="text-sm text-gray-600">{item.level}</Text>
             </View>
             <TouchableOpacity
               onPress={() => {
@@ -120,11 +113,11 @@ export default function SkillsScreen() {
                 ]);
               }}
             >
-              <Text style={{ color: "red" }}>Eliminar</Text>
+              <Text className="text-red-600 font-medium">Eliminar</Text>
             </TouchableOpacity>
           </View>
         )}
-        ListEmptyComponent={<Text>No hay habilidades aún.</Text>}
+        ListEmptyComponent={<Text className="text-gray-500 text-center mt-4">No hay habilidades aún.</Text>}
       />
     </View>
   );

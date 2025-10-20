@@ -1,6 +1,12 @@
-// app/preview.tsx
 import React from "react";
-import { View, ScrollView, StyleSheet, Button, Alert } from "react-native";
+import {
+  View,
+  ScrollView,
+  Alert,
+  TouchableOpacity,
+  Text,
+  // ❌ ELIMINADO: StyleSheet y Button
+} from "react-native";
 import { useCVContext } from "../context/CVContext";
 import { CVPreview } from "../components/CVPreview";
 import * as Print from "expo-print";
@@ -9,7 +15,6 @@ import * as Sharing from "expo-sharing";
 export default function PreviewScreen() {
   const { cvData } = useCVContext();
 
-  // Generar HTML para PDF
   const makeHtml = () => {
     const skillsHtml = cvData.skills
       .map((s) => `<li>${s.name} — ${s.level}</li>`)
@@ -77,7 +82,6 @@ export default function PreviewScreen() {
       Alert.alert("PDF generado", "El PDF se generó correctamente.");
       return uri;
     } catch (error) {
-      console.error(error);
       Alert.alert("Error", "No se pudo generar el PDF.");
     }
   };
@@ -101,24 +105,43 @@ export default function PreviewScreen() {
         dialogTitle: "Compartir CV (PDF)",
       });
     } catch (error) {
-      console.error(error);
       Alert.alert("Error", "No se pudo compartir el PDF.");
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
+    // MIGRACIÓN: styles.container
+    <ScrollView className="flex-1 bg-white">
       <CVPreview cvData={cvData} />
-      <View style={styles.buttons}>
-        <Button title="Generar PDF" onPress={exportToPdf} />
-        <View style={{ height: 12 }} />
-        <Button title="Compartir PDF" onPress={sharePdf} />
+      {/* MIGRACIÓN: styles.buttons */}
+      <View className="p-4">
+        {/* MIGRACIÓN: Button Generar PDF */}
+        <TouchableOpacity
+          onPress={exportToPdf}
+          className="bg-blue-500 p-3 rounded-lg"
+          activeOpacity={0.8}
+        >
+          <Text className="text-white text-base font-bold text-center">
+            Generar PDF
+          </Text>
+        </TouchableOpacity>
+        
+        {/* MIGRACIÓN: View style={{ height: 12 }} */}
+        <View className="h-3" />
+        
+        {/* MIGRACIÓN: Button Compartir PDF */}
+        <TouchableOpacity
+          onPress={sharePdf}
+          className="bg-blue-500 p-3 rounded-lg"
+          activeOpacity={0.8}
+        >
+          <Text className="text-white text-base font-bold text-center">
+            Compartir PDF
+          </Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
-  buttons: { padding: 16 },
-});
+// ❌ ELIMINADO EL OBJETO StyleSheet POR COMPLETO

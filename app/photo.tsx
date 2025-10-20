@@ -1,12 +1,10 @@
-// app/photo.tsx
-
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
   Image,
-  StyleSheet,
+  // ❌ ELIMINADO: StyleSheet
   Text,
   TouchableOpacity,
   View,
@@ -16,15 +14,12 @@ import { useCVContext } from "../context/CVContext";
 
 export default function PhotoScreen() {
   const router = useRouter();
-  
-  // ✅ CAMBIO 1: De "updatePersonalInfo" a "setPersonalInfo"
   const { cvData, setPersonalInfo } = useCVContext();
-  
+
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     cvData.personalInfo.profileImage
   );
 
-  // Solicitar permisos y tomar foto con la cámara
   const takePhoto = async () => {
     try {
       const cameraPermission =
@@ -49,11 +44,9 @@ export default function PhotoScreen() {
       }
     } catch (error) {
       Alert.alert("Error", "No se pudo abrir la cámara");
-      console.error(error);
     }
   };
 
-  // Seleccionar foto de la galería
   const pickImage = async () => {
     try {
       const galleryPermission =
@@ -79,13 +72,11 @@ export default function PhotoScreen() {
       }
     } catch (error) {
       Alert.alert("Error", "No se pudo abrir la galería");
-      console.error(error);
     }
   };
 
-  // ✅ CAMBIO 2: Guardar la foto
   const handleSave = () => {
-    setPersonalInfo({  // ← Cambió de updatePersonalInfo a setPersonalInfo
+    setPersonalInfo({
       ...cvData.personalInfo,
       profileImage: selectedImage,
     });
@@ -94,7 +85,6 @@ export default function PhotoScreen() {
     ]);
   };
 
-  // ✅ CAMBIO 3: Eliminar foto
   const handleRemove = () => {
     Alert.alert("Confirmar", "¿Estás seguro de eliminar la foto de perfil?", [
       { text: "Cancelar", style: "cancel" },
@@ -103,7 +93,7 @@ export default function PhotoScreen() {
         style: "destructive",
         onPress: () => {
           setSelectedImage(undefined);
-          setPersonalInfo({  // ← Cambió de updatePersonalInfo a setPersonalInfo
+          setPersonalInfo({
             ...cvData.personalInfo,
             profileImage: undefined,
           });
@@ -113,34 +103,58 @@ export default function PhotoScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Foto de Perfil</Text>
+    // Reemplazo de styles.container
+    <View className="flex-1 p-5 bg-gray-100">
+      {/* Reemplazo de styles.title */}
+      <Text className="text-2xl font-bold text-gray-800 mb-5 text-center">
+        Foto de Perfil
+      </Text>
 
-      <View style={styles.imageContainer}>
+      {/* Reemplazo de styles.imageContainer */}
+      <View className="items-center mb-8">
         {selectedImage ? (
-          <Image source={{ uri: selectedImage }} style={styles.image} />
+          <Image
+            source={{ uri: selectedImage }}
+            // Reemplazo de styles.image
+            className="w-52 h-52 rounded-full border-[3px] border-blue-500"
+          />
         ) : (
-          <View style={styles.placeholder}>
-            <Text style={styles.placeholderText}>Sin foto</Text>
+          // Reemplazo de styles.placeholder
+          <View className="w-52 h-52 rounded-full bg-gray-300 justify-center items-center border-[3px] border-gray-400">
+            {/* Reemplazo de styles.placeholderText */}
+            <Text className="text-gray-500 text-base">Sin foto</Text>
           </View>
         )}
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.actionButton} onPress={takePhoto}>
-          <Text style={styles.actionButtonText}>📷 Tomar Foto</Text>
+      {/* Reemplazo de styles.buttonContainer */}
+      <View className="mb-5">
+        {/* Reemplazo de styles.actionButton */}
+        <TouchableOpacity className="bg-blue-500 p-4 rounded-lg mb-3 items-center" onPress={takePhoto}>
+          {/* Reemplazo de styles.actionButtonText */}
+          <Text className="text-white text-base font-semibold">
+            📷 Tomar Foto
+          </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton} onPress={pickImage}>
-          <Text style={styles.actionButtonText}>🖼️ Seleccionar de Galería</Text>
+        {/* Reemplazo de styles.actionButton */}
+        <TouchableOpacity className="bg-blue-500 p-4 rounded-lg mb-3 items-center" onPress={pickImage}>
+          {/* Reemplazo de styles.actionButtonText */}
+          <Text className="text-white text-base font-semibold">
+            🖼️ Seleccionar de Galería
+          </Text>
         </TouchableOpacity>
 
         {selectedImage && (
           <TouchableOpacity
-            style={[styles.actionButton, styles.removeButton]}
+            // Reemplazo de [styles.actionButton, styles.removeButton]
+            className="bg-red-600 p-4 rounded-lg mb-3 items-center"
             onPress={handleRemove}
           >
-            <Text style={styles.actionButtonText}>🗑️ Eliminar Foto</Text>
+            {/* Reemplazo de styles.actionButtonText */}
+            <Text className="text-white text-base font-semibold">
+              🗑️ Eliminar Foto
+            </Text>
           </TouchableOpacity>
         )}
       </View>
@@ -156,60 +170,4 @@ export default function PhotoScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#f5f5f5",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#2c3e50",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  imageContainer: {
-    alignItems: "center",
-    marginBottom: 30,
-  },
-  image: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    borderWidth: 3,
-    borderColor: "#3498db",
-  },
-  placeholder: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: "#e0e0e0",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 3,
-    borderColor: "#bdc3c7",
-  },
-  placeholderText: {
-    color: "#7f8c8d",
-    fontSize: 16,
-  },
-  buttonContainer: {
-    marginBottom: 20,
-  },
-  actionButton: {
-    backgroundColor: "#3498db",
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 12,
-    alignItems: "center",
-  },
-  removeButton: {
-    backgroundColor: "#e74c3c",
-  },
-  actionButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-});
+// ❌ ELIMINADO EL OBJETO StyleSheet POR COMPLETO

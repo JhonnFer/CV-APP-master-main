@@ -1,5 +1,6 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, ViewStyle } from "react-native";
+import { TouchableOpacity, Text, ViewStyle } from "react-native";
+// ❌ ELIMINADO: StyleSheet
 
 interface NavigationButtonProps {
   title: string;
@@ -12,48 +13,38 @@ export const NavigationButton = ({
   title,
   onPress,
   variant = "primary",
-  style,
+  style, // Mantenemos 'style' por si se requiere un estilo en línea de RN, aunque lo ideal es usar className
 }: NavigationButtonProps) => {
+  // Clases base compartidas por todos los botones
+  const baseClasses =
+    "p-4 rounded-lg items-center justify-center my-2";
+  const baseTextClasses = "text-base font-semibold text-center";
+
+  // Mapeo de variantes a clases de NativeWind
+  const variantClasses = {
+    primary: "bg-blue-600",
+    secondary: "bg-transparent border-2 border-blue-600",
+    danger: "bg-red-600",
+  };
+
+  // Mapeo de colores de texto basado en la variante
+  const textVariantClasses = {
+    primary: "text-white",
+    secondary: "text-blue-600",
+    danger: "text-white",
+  };
+
   return (
     <TouchableOpacity
-      style={[styles.button, styles[variant], style]}
+      className={`${baseClasses} ${variantClasses[variant]}`}
       onPress={onPress}
       activeOpacity={0.8}
+      // Se pasa 'style' como un prop de estilo tradicional, manteniendo la compatibilidad si es necesaria
+      style={style}
     >
-      <Text
-        style={[styles.text, variant === "secondary" && styles.textSecondary]}
-      >
+      <Text className={`${baseTextClasses} ${textVariantClasses[variant]}`}>
         {title}
       </Text>
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    padding: 16,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    marginVertical: 8,
-  },
-  primary: {
-    backgroundColor: "#3498db",
-  },
-  secondary: {
-    backgroundColor: "transparent",
-    borderWidth: 2,
-    borderColor: "#3498db",
-  },
-  danger: {
-    backgroundColor: "#e74c3c",
-  },
-  text: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  textSecondary: {
-    color: "#3498db",
-  },
-});

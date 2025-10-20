@@ -1,25 +1,29 @@
-// app/personal-info.tsx
+// app/personal-info.tsx (VERSIÓN MIGRADA)
 import React from "react";
-import { View, ScrollView, Text, StyleSheet } from "react-native";
+import { 
+    View, 
+    ScrollView, 
+    Text, 
+    // ❌ ELIMINADO: StyleSheet 
+} from "react-native";
 import { useRouter } from "expo-router";
 import { useCVContext } from "../context/CVContext";
-import { InputField } from "../components/InputField";
+// NOTA: Se asume que InputField y NavigationButton serán migrados en pasos posteriores.
+import { InputField } from "../components/InputField"; 
 import { NavigationButton } from "../components/NavigationButton";
 import { useForm, Controller } from "react-hook-form";
 import { PersonalInfo } from "../types/cv.types";
 
 export default function PersonalInfoScreen() {
   const router = useRouter();
-  
-  // ✅ CAMBIO: De "updatePersonalInfo" a "setPersonalInfo"
+
   const { cvData, setPersonalInfo } = useCVContext();
 
   const { control, handleSubmit } = useForm<PersonalInfo>({
     defaultValues: cvData.personalInfo,
-    mode: "onChange", // validación en tiempo real
+    mode: "onChange",
   });
 
-  // ✅ CAMBIO: Usar setPersonalInfo en lugar de updatePersonalInfo
   const onSubmit = (data: PersonalInfo) => {
     setPersonalInfo(data);
     alert("Información guardada correctamente");
@@ -27,9 +31,14 @@ export default function PersonalInfoScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.sectionTitle}>Información Personal</Text>
+    // ⬅️ MIGRACIÓN: styles.container
+    <ScrollView className="flex-1 bg-gray-100"> 
+      {/* ⬅️ MIGRACIÓN: styles.content */}
+      <View className="p-5">
+        {/* ⬅️ MIGRACIÓN: styles.sectionTitle */}
+        <Text className="text-2xl font-bold mb-4 text-gray-800">
+          Información Personal
+        </Text>
 
         {/* Nombre Completo */}
         <Controller
@@ -125,7 +134,8 @@ export default function PersonalInfoScreen() {
               onChangeText={onChange}
               multiline
               numberOfLines={4}
-              style={{ height: 100, textAlignVertical: "top" }}
+              // ⚠️ ESTILO INLINE ACEPTADO TEMPORALMENTE hasta migrar InputField.tsx
+              style={{ height: 100, textAlignVertical: "top" }} 
             />
           )}
         />
@@ -137,8 +147,4 @@ export default function PersonalInfoScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f5f5f5" },
-  content: { padding: 20 },
-  sectionTitle: { fontSize: 22, fontWeight: "bold", marginBottom: 16, color: "#2c3e50" },
-});
+// ❌ ELIMINADO: const styles = StyleSheet.create({...});

@@ -1,13 +1,11 @@
-// app/education.tsx
+// app/education.tsx (VERSIÓN MIGRADA FINAL)
 import React from "react";
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
-  TouchableOpacity,
+  TouchableOpacity, // ⬅️ Usamos este componente
   TextInput,
-  Button,
   Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
@@ -21,7 +19,12 @@ export default function EducationScreen() {
   const router = useRouter();
   const { cvData, addEducation, deleteEducation } = useCVContext();
 
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       institution: "",
       degree: "",
@@ -40,54 +43,73 @@ export default function EducationScreen() {
   const handleDelete = (id: string) => {
     Alert.alert("Confirmar", "¿Eliminar esta educación?", [
       { text: "Cancelar", style: "cancel" },
-      { text: "Eliminar", style: "destructive", onPress: () => deleteEducation(id) },
+      {
+        text: "Eliminar",
+        style: "destructive",
+        onPress: () => deleteEducation(id),
+      },
     ]);
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.sectionTitle}>Agregar Nueva Educación</Text>
+    // Reemplazo de styles.container
+    <ScrollView className="flex-1 bg-gray-100">
+      {/* Reemplazo de styles.content */}
+      <View className="p-5">
+        {/* Reemplazo de styles.sectionTitle */}
+        <Text className="text-2xl font-bold mb-4 text-gray-800">
+          Agregar Nueva Educación
+        </Text>
 
-        <Text style={styles.label}>Institución *</Text>
+        {/* Institución */}
+        {/* Reemplazo de styles.label */}
+        <Text className="text-sm text-gray-700 mb-1">Institución *</Text>
         <Controller
           control={control}
           name="institution"
           rules={{ required: "La institución es obligatoria" }}
           render={({ field: { onChange, value } }) => (
             <TextInput
-              style={styles.input}
+              // Reemplazo de styles.input
+              className="border border-gray-300 rounded-lg p-3 mb-3 bg-white text-base"
               placeholder="Nombre de la universidad/institución"
               value={value}
               onChangeText={onChange}
             />
           )}
         />
-        {errors.institution && <Text style={styles.error}>{errors.institution.message}</Text>}
+        {/* Reemplazo de styles.error */}
+        {errors.institution && (
+          <Text className="text-red-500 mb-2">{errors.institution.message}</Text>
+        )}
 
-        <Text style={styles.label}>Título/Grado *</Text>
+        {/* Título/Grado */}
+        <Text className="text-sm text-gray-700 mb-1">Título/Grado *</Text>
         <Controller
           control={control}
           name="degree"
           rules={{ required: "El título es obligatorio" }}
           render={({ field: { onChange, value } }) => (
             <TextInput
-              style={styles.input}
+              className="border border-gray-300 rounded-lg p-3 mb-3 bg-white text-base"
               placeholder="Ej: Licenciatura, Maestría"
               value={value}
               onChangeText={onChange}
             />
           )}
         />
-        {errors.degree && <Text style={styles.error}>{errors.degree.message}</Text>}
+        {errors.degree && (
+          <Text className="text-red-500 mb-2">{errors.degree.message}</Text>
+        )}
 
-        <Text style={styles.label}>Área de Estudio</Text>
+        {/* Área de Estudio */}
+        <Text className="text-sm text-gray-700 mb-1">Área de Estudio</Text>
         <Controller
           control={control}
           name="field"
           render={({ field: { onChange, value } }) => (
             <TextInput
-              style={styles.input}
+              className="border border-gray-300 rounded-lg p-3 mb-3 bg-white text-base"
               placeholder="Ej: Ingeniería en Sistemas"
               value={value}
               onChangeText={onChange}
@@ -95,13 +117,14 @@ export default function EducationScreen() {
           )}
         />
 
-        <Text style={styles.label}>Año de Graduación</Text>
+        {/* Año de Graduación */}
+        <Text className="text-sm text-gray-700 mb-1">Año de Graduación</Text>
         <Controller
           control={control}
           name="graduationYear"
           render={({ field: { onChange, value } }) => (
             <TextInput
-              style={styles.input}
+              className="border border-gray-300 rounded-lg p-3 mb-3 bg-white text-base"
               placeholder="Ej: 2023"
               keyboardType="numeric"
               value={value}
@@ -110,77 +133,71 @@ export default function EducationScreen() {
           )}
         />
 
-        <View style={{ marginVertical: 12 }}>
-          <Button title="Agregar Educación" onPress={handleSubmit(onSubmit)} color="#3498db" />
-        </View>
+        {/* ⬅️ BOTÓN AGREGAR MIGRADO: De Button a TouchableOpacity */}
+        <TouchableOpacity
+          className="bg-blue-500 p-3 rounded-lg mt-3 mb-3"
+          onPress={handleSubmit(onSubmit)}
+          activeOpacity={0.8}
+        >
+          <Text className="text-white text-base font-bold text-center">
+            Agregar Educación
+          </Text>
+        </TouchableOpacity>
 
         {cvData.education.length > 0 && (
           <>
-            <Text style={styles.listTitle}>Educación Agregada</Text>
+            {/* Reemplazo de styles.listTitle */}
+            <Text className="text-xl font-semibold mt-6 mb-3 text-gray-800">
+              Educación Agregada
+            </Text>
             {cvData.education.map((edu) => (
-              <View key={edu.id} style={styles.card}>
-                <View style={styles.cardContent}>
-                  <Text style={styles.cardTitle}>{edu.degree}</Text>
-                  <Text style={styles.cardSubtitle}>{edu.field}</Text>
-                  <Text style={styles.cardInstitution}>{edu.institution}</Text>
-                  <Text style={styles.cardDate}>{edu.graduationYear}</Text>
+              // Reemplazo de styles.card
+              <View
+                key={edu.id}
+                className="bg-white rounded-lg p-4 mb-3 flex-row shadow-sm"
+              >
+                {/* Reemplazo de styles.cardContent */}
+                <View className="flex-1">
+                  {/* Reemplazo de styles.cardTitle */}
+                  <Text className="text-base font-semibold mb-1 text-gray-800">
+                    {edu.degree}
+                  </Text>
+                  {/* Reemplazo de styles.cardSubtitle */}
+                  <Text className="text-sm mb-1 text-gray-500">{edu.field}</Text>
+                  {/* Reemplazo de styles.cardInstitution */}
+                  <Text className="text-sm mb-0.5 text-gray-400">
+                    {edu.institution}
+                  </Text>
+                  {/* Reemplazo de styles.cardDate */}
+                  <Text className="text-xs text-gray-400">
+                    {edu.graduationYear}
+                  </Text>
                 </View>
-                <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(edu.id)}>
-                  <Text style={styles.deleteButtonText}>✕</Text>
+                {/* Reemplazo de styles.deleteButton */}
+                <TouchableOpacity
+                  className="w-8 h-8 rounded-full bg-red-600 justify-center items-center"
+                  onPress={() => handleDelete(edu.id)}
+                >
+                  {/* Reemplazo de styles.deleteButtonText */}
+                  <Text className="text-white text-lg font-bold">✕</Text>
                 </TouchableOpacity>
               </View>
             ))}
           </>
         )}
 
-        <View style={{ marginTop: 16 }}>
-          <Button title="Volver" onPress={() => router.back()} color="#7f8c8d" />
-        </View>
+        {/* ⬅️ BOTÓN VOLVER MIGRADO: De Button a TouchableOpacity */}
+        <TouchableOpacity
+          className="bg-gray-500 p-3 rounded-lg mt-4"
+          onPress={() => router.back()}
+          activeOpacity={0.8}
+        >
+          <Text className="text-white text-base font-bold text-center">
+            Volver
+          </Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f5f5f5" },
-  content: { padding: 20 },
-  sectionTitle: { fontSize: 22, fontWeight: "bold", marginBottom: 16, color: "#2c3e50" },
-  label: { fontSize: 14, color: "#34495e", marginBottom: 4 },
-  listTitle: { fontSize: 18, fontWeight: "600", marginTop: 24, marginBottom: 12, color: "#2c3e50" },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-    flexDirection: "row",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  cardContent: { flex: 1 },
-  cardTitle: { fontSize: 16, fontWeight: "600", marginBottom: 4, color: "#2c3e50" },
-  cardSubtitle: { fontSize: 14, marginBottom: 4, color: "#7f8c8d" },
-  cardInstitution: { fontSize: 14, marginBottom: 2, color: "#95a5a6" },
-  cardDate: { fontSize: 12, color: "#95a5a6" },
-  deleteButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "#e74c3c",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  deleteButtonText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
-  input: {
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
-    backgroundColor: "#fff",
-    borderColor: "#dcdcdc",
-    fontSize: 14,
-  },
-  error: { color: "red", marginBottom: 8 },
-});

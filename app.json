@@ -6,6 +6,9 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "web": {
+      "bundler": "metro"    // ⬅️ Añade o verifica esta línea
+    },
     "splash": {
       "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",

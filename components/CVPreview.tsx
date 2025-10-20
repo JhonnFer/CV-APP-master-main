@@ -1,6 +1,6 @@
-// components/CVPreview.tsx
 import React from "react";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, ScrollView, Text, View } from "react-native";
+// ❌ ELIMINADO: StyleSheet
 import { CVData } from "../types/cv.types";
 
 interface CVPreviewProps {
@@ -11,63 +11,98 @@ export const CVPreview = ({ cvData }: CVPreviewProps) => {
   const { personalInfo, experiences, education, skills } = cvData;
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        {/* Header con foto */}
-        <View style={styles.header}>
+    // MIGRACIÓN: styles.container
+    <ScrollView className="flex-1 bg-white">
+      {/* MIGRACIÓN: styles.content */}
+      <View className="p-5">
+        {/* MIGRACIÓN: styles.header */}
+        <View className="flex-row mb-6 items-center border-b border-gray-200 pb-4">
           {personalInfo.profileImage && (
             <Image
               source={{ uri: personalInfo.profileImage }}
-              style={styles.profileImage}
+              // MIGRACIÓN: styles.profileImage
+              className="w-24 h-24 rounded-full mr-4 border-2 border-blue-500"
             />
           )}
-          <View style={styles.headerText}>
-            <Text style={styles.name}>{personalInfo.fullName || "Nombre"}</Text>
+          {/* MIGRACIÓN: styles.headerText */}
+          <View className="flex-1">
+            {/* MIGRACIÓN: styles.name */}
+            <Text className="text-3xl font-bold text-gray-800 mb-2">
+              {personalInfo.fullName || "Nombre"}
+            </Text>
             {personalInfo.email && (
-              <Text style={styles.contact}>📧 {personalInfo.email}</Text>
+              // MIGRACIÓN: styles.contact
+              <Text className="text-sm text-gray-600 mb-0.5">📧 {personalInfo.email}</Text>
             )}
             {personalInfo.phone && (
-              <Text style={styles.contact}>📱 {personalInfo.phone}</Text>
+              <Text className="text-sm text-gray-600 mb-0.5">📱 {personalInfo.phone}</Text>
             )}
             {personalInfo.location && (
-              <Text style={styles.contact}>📍 {personalInfo.location}</Text>
+              <Text className="text-sm text-gray-600 mb-0.5">📍 {personalInfo.location}</Text>
             )}
           </View>
         </View>
 
         {/* Resumen */}
         {personalInfo.summary && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Resumen Profesional</Text>
-            <Text style={styles.text}>{personalInfo.summary}</Text>
+          // MIGRACIÓN: styles.section
+          <View className="mb-6">
+            {/* MIGRACIÓN: styles.sectionTitle */}
+            <Text className="text-xl font-bold text-blue-600 mb-3 border-b-2 border-blue-600 pb-1">
+              Resumen Profesional
+            </Text>
+            {/* MIGRACIÓN: styles.text */}
+            <Text className="text-base text-gray-700 leading-relaxed">
+              {personalInfo.summary}
+            </Text>
           </View>
         )}
 
         {/* Habilidades */}
         {skills.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Habilidades</Text>
-            {skills.map((skill) => (
-              <Text key={skill.id} style={styles.skillItem}>
-                • {skill.name} — {skill.level}
-              </Text>
-            ))}
+          // MIGRACIÓN: styles.section
+          <View className="mb-6">
+            {/* MIGRACIÓN: styles.sectionTitle */}
+            <Text className="text-xl font-bold text-blue-600 mb-3 border-b-2 border-blue-600 pb-1">
+              Habilidades
+            </Text>
+            <View className="flex-row flex-wrap">
+              {skills.map((skill) => (
+                // MIGRACIÓN: styles.skillItem
+                <Text key={skill.id} className="text-sm text-gray-700 mr-4 mb-1">
+                  • {skill.name} — **{skill.level}**
+                </Text>
+              ))}
+            </View>
           </View>
         )}
 
         {/* Experiencia */}
         {experiences.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Experiencia Laboral</Text>
+          // MIGRACIÓN: styles.section
+          <View className="mb-6">
+            {/* MIGRACIÓN: styles.sectionTitle */}
+            <Text className="text-xl font-bold text-blue-600 mb-3 border-b-2 border-blue-600 pb-1">
+              Experiencia Laboral
+            </Text>
             {experiences.map((exp) => (
-              <View key={exp.id} style={styles.item}>
-                <Text style={styles.itemTitle}>{exp.position}</Text>
-                <Text style={styles.itemSubtitle}>{exp.company}</Text>
-                <Text style={styles.itemDate}>
+              // MIGRACIÓN: styles.item
+              <View key={exp.id} className="mb-4">
+                {/* MIGRACIÓN: styles.itemTitle */}
+                <Text className="text-lg font-semibold text-gray-800 mb-1">
+                  {exp.position}
+                </Text>
+                {/* MIGRACIÓN: styles.itemSubtitle */}
+                <Text className="text-base text-gray-600 mb-0.5">{exp.company}</Text>
+                {/* MIGRACIÓN: styles.itemDate */}
+                <Text className="text-xs text-gray-500 mb-1">
                   {exp.startDate} - {exp.endDate || "Actual"}
                 </Text>
                 {exp.description && (
-                  <Text style={styles.itemDescription}>{exp.description}</Text>
+                  // MIGRACIÓN: styles.itemDescription
+                  <Text className="text-sm text-gray-700 leading-relaxed mt-1">
+                    {exp.description}
+                  </Text>
                 )}
               </View>
             ))}
@@ -76,14 +111,28 @@ export const CVPreview = ({ cvData }: CVPreviewProps) => {
 
         {/* Educación */}
         {education.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Educación</Text>
+          // MIGRACIÓN: styles.section
+          <View className="mb-6">
+            {/* MIGRACIÓN: styles.sectionTitle */}
+            <Text className="text-xl font-bold text-blue-600 mb-3 border-b-2 border-blue-600 pb-1">
+              Educación
+            </Text>
             {education.map((edu) => (
-              <View key={edu.id} style={styles.item}>
-                <Text style={styles.itemTitle}>{edu.degree}</Text>
-                {edu.field && <Text style={styles.itemSubtitle}>{edu.field}</Text>}
-                <Text style={styles.itemSubtitle}>{edu.institution}</Text>
-                <Text style={styles.itemDate}>{edu.graduationYear}</Text>
+              // MIGRACIÓN: styles.item
+              <View key={edu.id} className="mb-4">
+                {/* MIGRACIÓN: styles.itemTitle */}
+                <Text className="text-lg font-semibold text-gray-800 mb-1">
+                  {edu.degree}
+                </Text>
+                {edu.field && (
+                  // MIGRACIÓN: styles.itemSubtitle
+                  <Text className="text-base text-gray-600 mb-0.5">{edu.field}</Text>
+                )}
+                <Text className="text-base text-gray-600 mb-0.5">{edu.institution}</Text>
+                {/* MIGRACIÓN: styles.itemDate */}
+                <Text className="text-xs text-gray-500 mb-1">
+                  {edu.graduationYear}
+                </Text>
               </View>
             ))}
           </View>
@@ -92,37 +141,3 @@ export const CVPreview = ({ cvData }: CVPreviewProps) => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
-  content: { padding: 20 },
-  header: { flexDirection: "row", marginBottom: 24, alignItems: "center" },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginRight: 16,
-    borderWidth: 3,
-    borderColor: "#3498db",
-  },
-  headerText: { flex: 1 },
-  name: { fontSize: 28, fontWeight: "bold", color: "#2c3e50", marginBottom: 8 },
-  contact: { fontSize: 14, color: "#7f8c8d", marginBottom: 4 },
-  section: { marginBottom: 24 },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#3498db",
-    marginBottom: 12,
-    borderBottomWidth: 2,
-    borderBottomColor: "#3498db",
-    paddingBottom: 4,
-  },
-  text: { fontSize: 14, color: "#2c3e50", lineHeight: 20 },
-  skillItem: { fontSize: 14, color: "#2c3e50", marginBottom: 4 },
-  item: { marginBottom: 16 },
-  itemTitle: { fontSize: 16, fontWeight: "600", color: "#2c3e50", marginBottom: 4 },
-  itemSubtitle: { fontSize: 14, color: "#7f8c8d", marginBottom: 2 },
-  itemDate: { fontSize: 12, color: "#95a5a6", marginBottom: 4 },
-  itemDescription: { fontSize: 14, color: "#2c3e50", lineHeight: 20, marginTop: 4 },
-});

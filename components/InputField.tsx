@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet, TextInputProps } from "react-native";
+import { View, Text, TextInput, TextInputProps } from "react-native";
+// ❌ ELIMINADO: StyleSheet
 
 interface InputFieldProps extends TextInputProps {
   label: string;
@@ -7,43 +8,36 @@ interface InputFieldProps extends TextInputProps {
 }
 
 export const InputField = ({ label, error, ...props }: InputFieldProps) => {
+  // Las clases base para el TextInput
+  const baseInputClasses =
+    "border border-gray-300 rounded-lg p-3 text-base bg-white";
+
+  // Las clases para el estado de error
+  const errorInputClasses = "border-red-600";
+  const finalInputClasses = error
+    ? `${baseInputClasses} ${errorInputClasses}`
+    : baseInputClasses;
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+    // MIGRACIÓN: styles.container
+    <View className="mb-4">
+      {/* MIGRACIÓN: styles.label */}
+      <Text className="text-base font-semibold text-gray-800 mb-2">
+        {label}
+      </Text>
       <TextInput
-        style={[styles.input, error && styles.inputError]}
+        className={finalInputClasses}
         placeholderTextColor="#999"
-        {...props} // no filtramos aquí, la validación la hace RHF
+        // Aseguramos que la prop 'style' (si se usa para multiline) se aplique DE ÚLTIMAS
+        // permitiendo que NativeWind maneje la mayoría del estilo.
+        {...props}
       />
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && (
+        // MIGRACIÓN: styles.errorText
+        <Text className="text-red-600 text-xs mt-1">
+          {error}
+        </Text>
+      )}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: "#fff",
-  },
-  inputError: {
-    borderColor: "#e74c3c",
-  },
-  errorText: {
-    color: "#e74c3c",
-    fontSize: 12,
-    marginTop: 4,
-  },
-});

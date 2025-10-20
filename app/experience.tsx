@@ -1,14 +1,13 @@
-// app/experience.tsx
 import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
+  // ❌ ELIMINADO: StyleSheet
   ScrollView,
   TouchableOpacity,
   Alert,
   TextInput,
-  Button,
+  // ❌ ELIMINADO: Button
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useCVContext } from "../context/CVContext";
@@ -68,65 +67,86 @@ export default function ExperienceScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.sectionTitle}>Agregar Nueva Experiencia</Text>
+    <ScrollView className="flex-1 bg-gray-100">
+      <View className="p-5">
+        <Text className="text-xl font-bold mb-4 text-gray-800">
+          Agregar Nueva Experiencia
+        </Text>
 
-        <Text>Empresa *</Text>
+        <Text className="text-base mb-1 text-gray-700">Empresa *</Text>
         <Controller
           control={control}
           name="company"
           rules={{ required: "La empresa es obligatoria" }}
           render={({ field: { onChange, value } }) => (
-            <TextInput style={styles.input} placeholder="Nombre de la empresa" value={value} onChangeText={onChange} />
+            <TextInput
+              className="border border-gray-300 rounded-lg p-3 mb-3 bg-white"
+              placeholder="Nombre de la empresa"
+              value={value}
+              onChangeText={onChange}
+            />
           )}
         />
-        {errors.company && <Text style={styles.error}>{errors.company.message}</Text>}
+        {errors.company && <Text className="text-red-500 mb-2">{errors.company.message}</Text>}
 
-        <Text>Cargo *</Text>
+        <Text className="text-base mb-1 text-gray-700">Cargo *</Text>
         <Controller
           control={control}
           name="position"
           rules={{ required: "El cargo es obligatorio" }}
           render={({ field: { onChange, value } }) => (
-            <TextInput style={styles.input} placeholder="Tu posición" value={value} onChangeText={onChange} />
+            <TextInput
+              className="border border-gray-300 rounded-lg p-3 mb-3 bg-white"
+              placeholder="Tu posición"
+              value={value}
+              onChangeText={onChange}
+            />
           )}
         />
-        {errors.position && <Text style={styles.error}>{errors.position.message}</Text>}
+        {errors.position && <Text className="text-red-500 mb-2">{errors.position.message}</Text>}
 
-        <Text>Fecha de Inicio *</Text>
+        <Text className="text-base mb-1 text-gray-700">Fecha de Inicio *</Text>
         <Controller
           control={control}
           name="startDate"
           rules={{ required: "La fecha de inicio es obligatoria" }}
           render={({ field: { value } }) => (
-            <TouchableOpacity style={styles.dateInput} onPress={() => showDatePicker("startDate")}>
+            <TouchableOpacity
+              className="flex-row items-center border border-gray-300 rounded-lg p-3 mb-3 bg-white"
+              onPress={() => showDatePicker("startDate")}
+            >
+              {/* Se usa un objeto de estilo simple solo para flex: 1 en el texto, ya que Text no soporta flex-1 directamente sin className */}
               <Text style={{ flex: 1 }}>{value || "Selecciona fecha"}</Text>
               <Feather name="calendar" size={20} color="#3498db" />
             </TouchableOpacity>
           )}
         />
-        {errors.startDate && <Text style={styles.error}>{errors.startDate.message}</Text>}
+        {errors.startDate && <Text className="text-red-500 mb-2">{errors.startDate.message}</Text>}
 
-        <Text>Fecha de Fin</Text>
+        <Text className="text-base mb-1 text-gray-700">Fecha de Fin</Text>
         <Controller
           control={control}
           name="endDate"
           render={({ field: { value } }) => (
-            <TouchableOpacity style={styles.dateInput} onPress={() => showDatePicker("endDate")}>
+            <TouchableOpacity
+              className="flex-row items-center border border-gray-300 rounded-lg p-3 mb-3 bg-white"
+              onPress={() => showDatePicker("endDate")}
+            >
               <Text style={{ flex: 1 }}>{value || "Selecciona fecha"}</Text>
               <Feather name="calendar" size={20} color="#3498db" />
             </TouchableOpacity>
           )}
         />
 
-        <Text>Descripción</Text>
+        <Text className="text-base mb-1 text-gray-700">Descripción</Text>
         <Controller
           control={control}
           name="description"
           render={({ field: { onChange, value } }) => (
             <TextInput
-              style={[styles.input, { height: 100, textAlignVertical: "top" }]}
+              // Se combina NativeWind (borde, padding, etc.) con estilos para multiline
+              className="border border-gray-300 rounded-lg p-3 mb-3 bg-white h-24"
+              style={{ textAlignVertical: "top" }} 
               placeholder="Describe tus responsabilidades..."
               multiline
               numberOfLines={4}
@@ -136,29 +156,57 @@ export default function ExperienceScreen() {
           )}
         />
 
-        <Button title="Agregar Experiencia" onPress={handleSubmit(onSubmit)} color="#3498db" />
+        {/* ⬅️ BOTÓN AGREGAR MIGRADO: De Button a TouchableOpacity */}
+        <TouchableOpacity
+          className="bg-blue-500 p-3 rounded-lg mt-3 mb-3"
+          onPress={handleSubmit(onSubmit)}
+          activeOpacity={0.8}
+        >
+          <Text className="text-white text-base font-bold text-center">
+            Agregar Experiencia
+          </Text>
+        </TouchableOpacity>
 
         {cvData.experiences.length > 0 && (
           <>
-            <Text style={styles.listTitle}>Experiencias Agregadas</Text>
+            <Text className="text-lg font-semibold mt-6 mb-3 text-gray-800">
+              Experiencias Agregadas
+            </Text>
             {cvData.experiences.map((exp) => (
-              <View key={exp.id} style={styles.card}>
-                <View style={styles.cardContent}>
-                  <Text style={styles.cardTitle}>{exp.position}</Text>
-                  <Text style={styles.cardSubtitle}>{exp.company}</Text>
-                  <Text style={styles.cardDate}>
+              <View
+                key={exp.id}
+                className="bg-white rounded-xl p-4 mb-3 flex-row shadow-md"
+              >
+                <View className="flex-1">
+                  <Text className="text-base font-semibold mb-1">
+                    {exp.position}
+                  </Text>
+                  <Text className="text-sm mb-1">{exp.company}</Text>
+                  <Text className="text-xs text-gray-400">
                     {exp.startDate} - {exp.endDate || "Actual"}
                   </Text>
                 </View>
-                <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(exp.id)}>
-                  <Text style={styles.deleteButtonText}>✕</Text>
+                <TouchableOpacity
+                  className="w-8 h-8 rounded-full bg-red-600 justify-center items-center"
+                  onPress={() => handleDelete(exp.id)}
+                >
+                  <Text className="text-white text-lg font-bold">✕</Text>
                 </TouchableOpacity>
               </View>
             ))}
           </>
         )}
 
-        <Button title="Volver" onPress={() => router.back()} color="#7f8c8d" />
+        {/* ⬅️ BOTÓN VOLVER MIGRADO: De Button a TouchableOpacity */}
+        <TouchableOpacity
+          className="bg-gray-500 p-3 rounded-lg mt-4"
+          onPress={() => router.back()}
+          activeOpacity={0.8}
+        >
+          <Text className="text-white text-base font-bold text-center">
+            Volver
+          </Text>
+        </TouchableOpacity>
 
         <DateTimePickerModal
           isVisible={isDatePickerVisible}
@@ -171,19 +219,4 @@ export default function ExperienceScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f5f5f5" },
-  content: { padding: 20 },
-  sectionTitle: { fontSize: 20, fontWeight: "bold", marginBottom: 16, color: "#2c3e50" },
-  listTitle: { fontSize: 18, fontWeight: "600", marginTop: 24, marginBottom: 12, color: "#2c3e50" },
-  card: { backgroundColor: "#fff", borderRadius: 10, padding: 16, marginBottom: 12, flexDirection: "row", shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 3 },
-  cardContent: { flex: 1 },
-  cardTitle: { fontSize: 16, fontWeight: "600", marginBottom: 4 },
-  cardSubtitle: { fontSize: 14, marginBottom: 4 },
-  cardDate: { fontSize: 12, color: "#95a5a6" },
-  deleteButton: { width: 32, height: 32, borderRadius: 16, backgroundColor: "#e74c3c", justifyContent: "center", alignItems: "center" },
-  deleteButtonText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
-  input: { borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 12, borderColor: "#ccc", backgroundColor: "#fff" },
-  dateInput: { flexDirection: "row", alignItems: "center", borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 12, borderColor: "#ccc", backgroundColor: "#fff" },
-  error: { color: "red", marginBottom: 8 },
-});
+// ❌ ELIMINADO EL OBJETO StyleSheet POR COMPLETO
