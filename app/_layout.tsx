@@ -1,58 +1,70 @@
 // app/_layout.tsx
-import "../global.css";
+import React from 'react';
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
-
-import { Stack } from "expo-router";
-import { CVProvider } from "../context/CVContext";
-
-export default function RootLayout() {
+export default function Layout() {
   return (
-    <CVProvider>
-      <Stack
-      screenOptions={{ headerTitleAlign: "center" }}
-      >
-        
-        <Stack.Screen
-          name="index"
-          options={{
-            title: "Crear CV",
-            headerShown: true,
-          }}
-        />
-        
-        <Stack.Screen
-          name="photo"
-          options={{
-            title: "Foto de Perfil",
-          }}
-        />
-        
-        <Stack.Screen
-          name="personal-info"
-          options={{
-            title: "Información Personal",
-          }}
-        />
-        <Stack.Screen
-          name="experience"
-          options={{
-            title: "Experiencia Laboral",
-          }}
-        />
-        <Stack.Screen
-          name="education"
-          options={{
-            title: "Educación",
-          }}
-        />
-        <Stack.Screen
-          name="preview"
-          options={{
-            title: "Vista Previa",
-            presentation: "modal",
-          }}
-        />
-      </Stack>
-    </CVProvider>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: '#2563EB',
+        tabBarInactiveTintColor: '#9CA3AF',
+        tabBarStyle: {
+          backgroundColor: '#fff',
+          borderTopColor: '#E5E7EB',
+          height: 64,
+          paddingBottom: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
+        },
+      }}
+    >
+      {/* Inicio */}
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Inicio',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" color={color} size={size} />
+          ),
+        }}
+      />
+
+      {/* Reporte */}
+      <Tabs.Screen
+        name="reporte"
+        options={{
+          title: 'Reporte',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="bar-chart-outline" color={color} size={size} />
+          ),
+        }}
+      />
+
+      {/* Balance */}
+      <Tabs.Screen
+        name="balance"
+        options={{
+          title: 'Balance',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="scale-outline" color={color} size={size} />
+          ),
+        }}
+      />
+
+      {/* Recibos */}
+      <Tabs.Screen
+        name="recibos"
+        options={{
+          title: 'Recibos',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="receipt-outline" color={color} size={size} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }

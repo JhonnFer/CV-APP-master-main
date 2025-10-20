@@ -32,9 +32,20 @@ export interface Education {
   graduationYear: string;
 }
 
+export interface Expense {
+  id: string;
+  description: string;
+  amount: number;
+  paidBy: string; // who paid
+  participants: string[]; // other participants
+  receiptImage: string; // uri of the receipt photo (required)
+  date: string;
+}
+
 export interface CVData {
   skills: Skill[];
   personalInfo: PersonalInfo;
   experiences: Experience[];
   education: Education[];
+  expenses?: Expense[];
 }

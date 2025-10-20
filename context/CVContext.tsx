@@ -1,11 +1,14 @@
 // context/CVContext.tsx
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
-import { CVData, PersonalInfo, Experience, Education, Skill } from "../types/cv.types";
+import React, { createContext, ReactNode, useContext, useState } from "react";
+import { CVData, Education, Experience, PersonalInfo, Skill } from "../types/cv.types";
 
 interface CVContextType {
   cvData: CVData;
   setPersonalInfo: (info: PersonalInfo) => void;
+  addExpense: (exp: any) => void;
+  updateExpense: (id: string, exp: any) => void;
+  deleteExpense: (id: string) => void;
   addExperience: (exp: Experience) => void;
   updateExperience: (id: string, exp: Experience) => void;
   deleteExperience: (id: string) => void;
@@ -34,6 +37,7 @@ export const CVProvider = ({ children }: { children: ReactNode }) => {
     experiences: [],
     education: [],
     skills: [], // 🔹 Nueva propiedad para Skills
+    expenses: [],
   });
 
   // 🔹 Información personal
@@ -108,6 +112,29 @@ export const CVProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
+  // 🔹 Gastos (Expenses)
+  const addExpense = (exp: any) => {
+    const newExp = { ...exp, id: Date.now().toString() };
+    setCvData((prev) => ({
+      ...prev,
+      expenses: [...(prev.expenses || []), newExp],
+    }));
+  };
+
+  const updateExpense = (id: string, exp: any) => {
+    setCvData((prev) => ({
+      ...prev,
+      expenses: prev.expenses ? prev.expenses.map((e) => (e.id === id ? exp : e)) : [exp],
+    }));
+  };
+
+  const deleteExpense = (id: string) => {
+    setCvData((prev) => ({
+      ...prev,
+      expenses: prev.expenses ? prev.expenses.filter((e) => e.id !== id) : [],
+    }));
+  };
+
   // 🔹 Resetear todo el CV
   const resetCV = () => {
     setCvData({
@@ -130,6 +157,9 @@ export const CVProvider = ({ children }: { children: ReactNode }) => {
       value={{
         cvData,
         setPersonalInfo,
+        addExpense,
+        updateExpense,
+        deleteExpense,
         addExperience,
         updateExperience,
         deleteExperience,
