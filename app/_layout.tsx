@@ -33,16 +33,7 @@ export default function Layout() {
         }}
       />
 
-      {/* Reporte */}
-      <Tabs.Screen
-        name="reporte"
-        options={{
-          title: 'Reporte',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="bar-chart-outline" color={color} size={size} />
-          ),
-        }}
-      />
+      
 
       {/* Balance */}
       <Tabs.Screen
@@ -62,6 +53,16 @@ export default function Layout() {
           title: 'Recibos',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="receipt-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      {/* Reporte */}
+      <Tabs.Screen
+        name="reporte"
+        options={{
+          title: 'Reporte',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="bar-chart-outline" color={color} size={size} />
           ),
         }}
       />

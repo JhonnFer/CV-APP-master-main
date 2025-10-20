@@ -25,7 +25,7 @@ export default function HomeExpensesScreen() {
 
   return (
     <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }} className="bg-gray-100">
-      
+
       {/* Resumen Total */}
       <View className="bg-blue-600 p-4 rounded-xl mb-4 shadow">
         <Text className="text-2xl font-bold text-white mb-1">Gastos Compartidos</Text>
@@ -37,7 +37,7 @@ export default function HomeExpensesScreen() {
         <View className="flex-row justify-between items-center mb-2">
           <Text className="text-lg font-semibold text-gray-800"> Gastos</Text>
           {/* Botón + para agregar gasto */}
-          
+
         </View>
 
         {expenses.length === 0 && (
@@ -52,21 +52,22 @@ export default function HomeExpensesScreen() {
           </View>
         ))}
       </View>
-        <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            className="bg-blue-500 px-4 py-2 rounded"
-          >
-            <Text className="text-white text-xl font-bold">+</Text>
-          </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => setModalVisible(true)}
+        className="bg-blue-600 w-14 h-14 rounded-full items-center justify-center shadow-lg absolute bottom-8 right-8"
+      >
+        <Text className="text-white text-3xl font-bold">+</Text>
+      </TouchableOpacity>
+
 
       {/* Modal para agregar gasto */}
       <AddExpenseModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-          onSaved={async () => {
-    await loadExpenses();   // recarga los datos
-    setModalVisible(false);
-  }}
+        onSaved={async () => {
+          await loadExpenses();   // recarga los datos
+          setModalVisible(false);
+        }}
       />
     </ScrollView>
   );

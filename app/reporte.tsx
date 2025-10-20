@@ -1,11 +1,13 @@
+// app/ReportScreen.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, ScrollView, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { getExpenses } from '../hooks/storage';
 import { computeBalances } from '../hooks/settlement';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import dayjs from 'dayjs';
 import { Expense } from '../types/expenses';
+import  {Share2}  from 'lucide-react-native';
 import '../global.css';
 
 export default function ReportScreen() {
@@ -68,7 +70,7 @@ export default function ReportScreen() {
   }
 
   async function generateAndSharePdf() {
-    if (isProcessing) return; // Evita doble click
+    if (isProcessing) return;
     if (expenses.length === 0) return Alert.alert('Reporte', 'No hay gastos para generar reporte.');
 
     setIsProcessing(true);
@@ -91,40 +93,41 @@ export default function ReportScreen() {
   }
 
   return (
-    <View style={{ flex: 1, padding: 12, backgroundColor: '#f8fafc' }}>
-      <Text style={{ fontSize: 18, fontWeight: '700' }}>📊 Reporte</Text>
-      <ScrollView style={{ marginTop: 12 }}>
-        
+    <View className="flex-1 bg-slate-50 p-4">
+      <Text className="text-lg font-bold">📊 Reporte</Text>
 
-        <View style={{ height: 12 }} />
+      <ScrollView className="mt-3">
+        <Text className="font-semibold">Gastos registrados ({expenses.length}):</Text>
 
-        <Text style={{ fontWeight: '600' }}>Gastos registrados ({expenses.length}):</Text>
         {expenses.slice(0, 20).map(e => (
-          <View key={e.id} style={{ padding: 8, backgroundColor: '#fff', borderRadius: 8, marginTop: 8 }}>
-            <Text style={{ fontWeight: '700' }}>{e.title} — ${e.amount.toFixed(2)}</Text>
-            <Text style={{ color: '#6b7280' }}>{e.paidBy} • {new Date(e.date).toLocaleString()}</Text>
+          <View
+            key={e.id}
+            className="p-3 bg-white rounded-xl shadow-sm mt-2"
+          >
+            <Text className="font-bold text-gray-900">
+              {e.title} — ${e.amount.toFixed(2)}
+            </Text>
+            <Text className="text-gray-500">
+              {e.paidBy} • {new Date(e.date).toLocaleString()}
+            </Text>
           </View>
         ))}
       </ScrollView>
 
-      <View style={{ marginTop: 16 }}>
-        <TouchableOpacity
-          onPress={generateAndSharePdf}
-          disabled={isProcessing}
-          style={{
-            backgroundColor: isProcessing ? '#94a3b8' : '#2563eb',
-            paddingVertical: 12,
-            borderRadius: 8,
-            alignItems: 'center'
-          }}
-        >
-          {isProcessing ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={{ color: '#fff', fontWeight: '700' }}>Generar y compartir PDF</Text>
-          )}
-        </TouchableOpacity>
-      </View>
+      {/* 🔵 Botón flotante circular para generar PDF */}
+      <TouchableOpacity
+        onPress={generateAndSharePdf}
+        disabled={isProcessing}
+        className={`absolute bottom-6 right-6 p-4 rounded-full shadow-lg ${
+          isProcessing ? 'bg-slate-400' : 'bg-blue-600'
+        }`}
+      >
+        {isProcessing ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Share2 size={28} color="white" />
+        )}
+      </TouchableOpacity>
     </View>
   );
 }
