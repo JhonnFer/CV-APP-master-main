@@ -1,21 +1,22 @@
 // app/ReportScreen.tsx
 import React, { useEffect, useState, useMemo } from 'react';
-import { View, Text, ScrollView, Alert, ActivityIndicator, TouchableOpacity, Dimensions, SafeAreaView } from 'react-native';
+import { View, Text, ScrollView, Alert, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getExpenses } from '../hooks/storage';
 import { computeBalances } from '../hooks/settlement';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import dayjs from 'dayjs';
 import { Expense } from '../types/expenses';
-import '../global.css';
 import { Share2 } from 'lucide-react-native';
+import '../global.css';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 32) / 2;
 
-// Componente de barra de categoría
+// Barra de categoría
 const CategoryBar = ({ name, amount, totalMax, color, isMain }: { name: string, amount: number, totalMax: number, color: string, isMain?: boolean }) => {
-  const percentage = (amount / totalMax) * 100;
+  const percentage = totalMax > 0 ? (amount / totalMax) * 100 : 0;
   return (
     <View className="mb-3">
       <View className="flex-row justify-between items-center mb-1">
@@ -36,6 +37,7 @@ export default function ReportScreen() {
   const [startDate] = useState(dayjs('2025-10-01'));
   const [endDate] = useState(dayjs('2025-10-17'));
 
+  // Carga de datos
   async function load() {
     const e = await getExpenses();
     setExpenses(e);
@@ -43,19 +45,25 @@ export default function ReportScreen() {
 
   useEffect(() => { load(); }, []);
 
-  // Totales y promedios
+  // Totales y promedio
   const totalSpent = useMemo(() => expenses.reduce((sum, e) => sum + e.amount, 0), [expenses]);
   const daysInPeriod = endDate.diff(startDate, 'day') + 1;
   const averagePerDay = daysInPeriod > 0 ? totalSpent / daysInPeriod : 0;
 
-  // Categorías de ejemplo
-  const categories = useMemo(() => ({
-    Comida: 280,
-    Restaurantes: 150,
-    Transporte: 45,
-    TotalMax: Math.max(280, 150, 45)
-  }), []);
+  // Cálculo dinámico de categorías según gastos
+  const categories = useMemo(() => {
+    const catTotals: Record<string, number> = {};
+    let max = 0;
+    expenses.forEach(e => {
+      const cat = e.category || 'Otros';
+      catTotals[cat] = (catTotals[cat] || 0) + e.amount;
+      if (catTotals[cat] > max) max = catTotals[cat];
+    });
+    catTotals.TotalMax = max;
+    return catTotals;
+  }, [expenses]);
 
+  // HTML para PDF
   function buildHtml(): string {
     const title = `Reporte de Gastos - ${dayjs().format('YYYY-MM-DD')}`;
     const rows = expenses.map(ex => `
@@ -71,7 +79,11 @@ export default function ReportScreen() {
       <html>
         <head>
           <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-          <style>body { font-family: Arial; padding: 20px; } table { border-collapse: collapse; width: 100%; } td, th { border:1px solid #ddd; padding:8px; }</style>
+          <style>
+            body { font-family: Arial; padding: 20px; }
+            table { border-collapse: collapse; width: 100%; }
+            td, th { border:1px solid #ddd; padding:8px; }
+          </style>
         </head>
         <body>
           <h1>${title}</h1>
@@ -110,7 +122,6 @@ export default function ReportScreen() {
   return (
     <View className="flex-1 bg-gray-100">
       <SafeAreaView style={{ flex: 1, backgroundColor: '#4c1d95' }}>
-
         {/* Header */}
         <View className="bg-violet-800 pt-8 pb-4 px-4">
           <Text className="text-white text-3xl font-bold">Reporte Mensual</Text>
@@ -133,9 +144,16 @@ export default function ReportScreen() {
           {/* Categorías */}
           <View className="bg-white p-4 rounded-xl mb-6 shadow-md">
             <Text className="text-lg font-semibold text-gray-800 mb-4">Gastos por Categoría</Text>
-            <CategoryBar name="Comida" amount={categories.Comida} totalMax={categories.TotalMax} color="#2563eb" isMain />
-            <CategoryBar name="Restaurantes" amount={categories.Restaurantes} totalMax={categories.TotalMax} color="#9333ea" />
-            <CategoryBar name="Transporte" amount={categories.Transporte} totalMax={categories.TotalMax} color="#f97316" />
+            {Object.entries(categories).filter(([k]) => k !== 'TotalMax').map(([k,v], i) => (
+              <CategoryBar
+                key={i}
+                name={k}
+                amount={v as number}
+                totalMax={categories.TotalMax}
+                color={i===0 ? '#2563eb' : i===1 ? '#9333ea' : '#f97316'}
+                isMain={i===0}
+              />
+            ))}
           </View>
 
           {/* Gastos listados */}
@@ -165,8 +183,7 @@ export default function ReportScreen() {
 
         </ScrollView>
 
-
-        {/* Botón flotante circular */}
+        {/* Botón flotante */}
         <TouchableOpacity
           onPress={generateAndSharePdf}
           disabled={isProcessing}
