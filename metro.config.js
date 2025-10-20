@@ -4,7 +4,7 @@ const { withNativeWind } = require("nativewind/metro");
 
 const config = getDefaultConfig(__dirname);
 
-// 🚨 Asegúrate de que withNativeWind envuelva la configuración de Metro
+// Envuelve Metro con NativeWind
 module.exports = withNativeWind(config, {
-  // input: './global.css' (Si comentaste todo el contenido del archivo, puedes dejarlo así)
+  input: "./global.css", // Asegura que lea tu CSS global
 });

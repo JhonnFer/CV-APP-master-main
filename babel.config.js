@@ -3,12 +3,15 @@ module.exports = function (api) {
   api.cache(true);
   return {
     presets: [
-      "babel-preset-expo",
-      "nativewind/babel", // Debe estar aquí, como un preset
+      // 1️⃣ Expo preset con soporte para NativeWind
+      ["babel-preset-expo", { jsxImportSource: "nativewind" }],
+
+      // 2️⃣ NativeWind como preset (no como plugin)
+      "nativewind/babel",
     ],
     plugins: [
-      "react-native-reanimated/plugin", 
-      // Si tienes otros plugins, van aquí.
+      // 3️⃣ Reanimated siempre debe ir aquí y al final
+      "react-native-reanimated/plugin",
     ],
   };
 };

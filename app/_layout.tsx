@@ -1,6 +1,7 @@
 // app/_layout.tsx
 import "../global.css";
 
+
 import { Stack } from "expo-router";
 import { CVProvider } from "../context/CVContext";
 
@@ -8,15 +9,7 @@ export default function RootLayout() {
   return (
     <CVProvider>
       <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: "#3498db",
-          },
-          headerTintColor: "#f8e4e4ff",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-        }}
+      screenOptions={{ headerTitleAlign: "center" }}
       >
         
         <Stack.Screen

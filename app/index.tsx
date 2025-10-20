@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useCVContext } from "../context/CVContext";
 
+
 export default function HomeScreen() {
   const router = useRouter();
   const { cvData } = useCVContext();
@@ -20,7 +21,7 @@ export default function HomeScreen() {
       contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
       showsVerticalScrollIndicator
     >
-      <Text className="text-2xl font-bold mb-5 text-center text-gray-800">
+      <Text className="text-2xl font-bold mb-5 text-center text-red-800">
         Crea tu CV Profesional
       </Text>
 
